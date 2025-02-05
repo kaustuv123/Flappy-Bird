@@ -1,0 +1,4 @@
+1. Media View port ke hisaab se height aur width
+2. gravity should feel more natural where the fal starts slow and accelerates with time
+3. the png should rotate on tap and again rotate during fall
+4. increase obj_speed with score

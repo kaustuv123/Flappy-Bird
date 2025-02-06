@@ -2,19 +2,19 @@ import styled from "styled-components";
 import { useEffect, useState, useCallback, useMemo } from "react";
 
 // Remove static dimensions and calculate based on screen size
-const GAME_RATIO = 1.5; // Height:Width ratio (600:400 = 1.5)
+const GAME_RATIO = 1.75; // Height:Width ratio (600:400 = 1.5)
 const BIRD_HEIGHT = 52;
 const BIRD_WIDTH = 50;
-const GRAVITY = 0.8; // Reduced from 6 to create smoother acceleration
-const JUMP_FORCE = -10; // New constant for jump strength
-const TERMINAL_VELOCITY = 10; // Maximum falling speed
+const GRAVITY = 0.5;  // Adjusted for more realistic gravity
+const JUMP_FORCE = -8;  // Smaller jump for better control
+const TERMINAL_VELOCITY = 12;  // Increased max fall speed
 const OBJ_WIDTH = 52;
-const OBJ_SPEED = 6; // Slightly reduced speed to match original game feel
+const OBJ_SPEED = 4;  // Slightly slower pipes for better gameplay
 const OBJ_GAP = 200;
 
 // Add new constant for rotation
-const MAX_ROTATION = 90; // Maximum rotation in degrees
-const ROTATION_SPEED = 0.15; // Speed of rotation transition
+const MAX_ROTATION = 45;  // Reduced max rotation for more natural look
+const ROTATION_SPEED = 0.2;  // Faster rotation response
 
 // Add bird character constants
 const BIRD_CHARACTERS = [
@@ -90,91 +90,97 @@ function App() {
     setSelectedBird(null);
   }, [dimensions.height, dimensions.width]);
 
-  // Pipe movement and scoring
-  useEffect(() => {
-    if (!gameState.isStart) return;
-
-    let frameId;
-    let lastTimestamp = 0;
-    const targetFrameTime = 1000 / 60; // 60 FPS
-
-    const updatePipe = (timestamp) => {
-      if (timestamp - lastTimestamp >= targetFrameTime) {
-        setGameState(prev => {
-          if (prev.objPos >= -OBJ_WIDTH) {
-            return { ...prev, objPos: prev.objPos - OBJ_SPEED };
-          } else {
-            const newObjHeight = Math.floor(Math.random() * (dimensions.height - OBJ_GAP));
-            return {
-              ...prev,
-              objPos: dimensions.width,
-              objHeight: newObjHeight,
-              score: prev.score + 1
-            };
-          }
-        });
-        lastTimestamp = timestamp;
-      }
-      frameId = requestAnimationFrame(updatePipe);
-    };
-
-    frameId = requestAnimationFrame(updatePipe);
-    return () => cancelAnimationFrame(frameId);
-  }, [gameState.isStart, dimensions.width, dimensions.height]);
-
   // Physics and collision detection
   useEffect(() => {
     if (!gameState.isStart) return;
 
     let frameId;
-    let lastTimestamp = 0;
-    const targetFrameTime = 1000 / 60;
+    let lastTime = performance.now();
+    const targetFPS = 60;  // Increased to 60 FPS for smoother physics
 
-    const updatePhysics = (timestamp) => {
-      if (timestamp - lastTimestamp >= targetFrameTime) {
-        setGameState(prev => {
-          // Collision detection
-          const topObj = prev.birdPos >= 0 && prev.birdPos < prev.objHeight;
-          const bottomObj = prev.birdPos <= dimensions.height &&
-            prev.birdPos >= dimensions.height - (dimensions.height - OBJ_GAP - prev.objHeight) - BIRD_HEIGHT;
+    const updatePhysics = (currentTime) => {
+      const deltaTime = (currentTime - lastTime) / (1000 / targetFPS);
+      lastTime = currentTime;
 
-          if (
-            prev.objPos >= OBJ_WIDTH &&
-            prev.objPos <= OBJ_WIDTH + 80 &&
-            (topObj || bottomObj)
-          ) {
-            resetGame();
-            return prev;
-          }
+      setGameState(prev => {
+        // Collision detection
+        const topObj = prev.birdPos >= 0 && prev.birdPos < prev.objHeight;
+        const bottomObj = prev.birdPos <= dimensions.height &&
+          prev.birdPos >= dimensions.height - (dimensions.height - OBJ_GAP - prev.objHeight) - BIRD_HEIGHT;
 
-          // Physics update
-          const newVelocity = Math.min(prev.velocity + GRAVITY, TERMINAL_VELOCITY);
-          const targetRotation = newVelocity > 0
-            ? Math.min(newVelocity * 4, MAX_ROTATION)
-            : Math.max(newVelocity * 4, -MAX_ROTATION);
-          const newRotation = prev.rotation + (targetRotation - prev.rotation) * ROTATION_SPEED;
-          const newBirdPos = prev.birdPos + newVelocity;
+        if (
+          prev.objPos >= OBJ_WIDTH &&
+          prev.objPos <= OBJ_WIDTH + 80 &&
+          (topObj || bottomObj)
+        ) {
+          resetGame();
+          return prev;
+        }
 
-          if (newBirdPos > dimensions.height - BIRD_HEIGHT) {
-            resetGame();
-            return prev;
-          }
+        // Physics update with improved gravity feel
+        const gravityEffect = GRAVITY * deltaTime;
+        const newVelocity = Math.min(prev.velocity + gravityEffect, TERMINAL_VELOCITY);
+        
+        // Improved rotation calculation
+        const targetRotation = newVelocity > 0
+          ? Math.min(newVelocity * 6, MAX_ROTATION)  // Faster rotation when falling
+          : Math.max(newVelocity * 4, -MAX_ROTATION);  // Slower rotation when jumping
+        
+        const newRotation = prev.rotation + (targetRotation - prev.rotation) * ROTATION_SPEED;
+        const newBirdPos = prev.birdPos + (newVelocity * deltaTime);
 
-          return {
-            ...prev,
-            velocity: newVelocity,
-            rotation: newRotation,
-            birdPos: newBirdPos
-          };
-        });
-        lastTimestamp = timestamp;
-      }
+        if (newBirdPos > dimensions.height - BIRD_HEIGHT) {
+          resetGame();
+          return prev;
+        }
+
+        return {
+          ...prev,
+          velocity: newVelocity,
+          rotation: newRotation,
+          birdPos: Math.max(0, newBirdPos)  // Prevent bird from going above screen
+        };
+      });
+
       frameId = requestAnimationFrame(updatePhysics);
     };
 
     frameId = requestAnimationFrame(updatePhysics);
     return () => cancelAnimationFrame(frameId);
   }, [gameState.isStart, dimensions.height, resetGame]);
+
+  // Update pipe movement to match new physics timing
+  useEffect(() => {
+    if (!gameState.isStart) return;
+
+    let frameId;
+    let lastTime = performance.now();
+    const targetFPS = 60;
+
+    const updatePipe = (currentTime) => {
+      const deltaTime = (currentTime - lastTime) / (1000 / targetFPS);
+      lastTime = currentTime;
+
+      setGameState(prev => {
+        if (prev.objPos >= -OBJ_WIDTH) {
+          return { ...prev, objPos: prev.objPos - (OBJ_SPEED * deltaTime) };
+        } else {
+          const newObjHeight = Math.floor(Math.random() * (dimensions.height - OBJ_GAP));
+          return {
+            ...prev,
+            objPos: dimensions.width,
+            objHeight: newObjHeight,
+            score: prev.score + 1
+          };
+        }
+      });
+
+      frameId = requestAnimationFrame(updatePipe);
+    };
+
+    frameId = requestAnimationFrame(updatePipe);
+    return () => cancelAnimationFrame(frameId);
+  }, [gameState.isStart, dimensions.width, dimensions.height]);
 
   // Memoized event handlers
   const handler = useCallback((e) => {
@@ -277,40 +283,49 @@ const Home = styled.div`
   font-family: 'Press Start 2P', cursive;
   background-color: #2c3e50;
 `;
-const Background = styled.div`
+const Background = styled.div.attrs(props => ({
+  style: {
+    width: `${props.width}px`,
+    height: `${props.height}px`,
+    backgroundSize: `${props.width}px ${props.height}px`,
+  },
+}))`
   background-image: url("./images/background-day.png");
   background-repeat: no-repeat;
-  background-size: ${(props) => props.width}px ${(props) => props.height}px;
-  width: ${(props) => props.width}px;
-  height: ${(props) => props.height}px;
   position: relative;
   overflow: hidden;
   border: 2px solid black;
 `;
 
-const Bird = styled.div`
+const Bird = styled.div.attrs(props => ({
+  style: {
+    width: `${props.width}px`,
+    height: `${props.height}px`,
+    top: `${props.top}px`,
+    left: `${props.left}px`,
+    transform: `rotate(${props.rotation}deg)`,
+    backgroundImage: `url(${props.image})`,
+    backgroundSize: `${props.width}px ${props.height}px`,
+  },
+}))`
   position: absolute;
-  background-image: url(${(props) => props.image});
   background-repeat: no-repeat;
-  background-size: ${(props) => props.width}px ${(props) => props.height}px;
-  width: ${(props) => props.width}px;
-  height: ${(props) => props.height}px;
-  top: ${(props) => props.top}px;
-  left: ${(props) => props.left}px;
-  transform: rotate(${(props) => props.rotation}deg);
   transition: transform 0.1s ease-out;
   transform-origin: center center;
   cursor: pointer;
 `;
 
-const Obj = styled.div`
+const Obj = styled.div.attrs(props => ({
+  style: {
+    width: `${props.width}px`,
+    height: `${props.height}px`,
+    left: `${props.left}px`,
+    top: `${props.top}px`,
+    transform: `rotate(${props.deg}deg)`,
+  },
+}))`
   position: relative;
   background-image: url("./images/pipe-green.png");
-  width: ${(props) => props.width}px;
-  height: ${(props) => props.height}px;
-  left: ${(props) => props.left}px;
-  top: ${(props) => props.top}px;
-  transform: rotate(${(props) => props.deg}deg);
 `;
 
 const Startboard = styled.div`
@@ -382,9 +397,12 @@ const CharacterOption = styled.div`
   }
 `;
 
-const BirdPreview = styled.img`
-  width: ${BIRD_WIDTH}px;
-  height: ${BIRD_HEIGHT}px;
+const BirdPreview = styled.img.attrs(props => ({
+  style: {
+    width: `${props.width}px`,
+    height: `${props.height}px`,
+  },
+}))`
   object-fit: contain;
 `;
 

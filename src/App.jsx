@@ -1,5 +1,4 @@
-import styled from "styled-components";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // Remove static dimensions and calculate based on screen size
 const GAME_RATIO = 1.75; // Height:Width ratio (600:400 = 1.5)
@@ -16,23 +15,23 @@ const OBJ_GAP = 200;
 const MAX_ROTATION = 45;  // Reduced max rotation for more natural look
 const ROTATION_SPEED = 0.2;  // Faster rotation response
 
-// Add bird character constants
+// Updated bird characters with unlock thresholds
 const BIRD_CHARACTERS = [
   {
-    id: 'yellow',
-    name: 'Yellow Bird',
-    image: '../public/images/yellowbird-upflap.png'
+    id: 'tarushi1',
+    name: 'Baby Tarushi',
+    image: '../public/images/yellowbird-upflap.png',
+    unlockScore: 0,
+    description: 'Your starter Tarushi! Help her fly higher!'
   },
   {
-    id: 'red',
-    name: 'Red Bird',
-    image: '../public/images/yellowbird-upflap2.png'
-  },
-  // {
-  //   id: 'blue',
-  //   name: 'Blue Bird',
-  //   image: './images/bluebird-upflap.png'
-  // }
+    id: 'tarushi2',
+    name: 'Cute Tarushi',
+    image: '../public/images/yellowbird-upflap2.png',
+    unlockScore: 1,
+    description: 'Score 1 to unlock this adorable version!'
+  }
+  // Add more characters here with increasing unlockScore values
 ];
 
 function App() {
@@ -47,6 +46,23 @@ function App() {
     rotation: 0
   });
   const [selectedBird, setSelectedBird] = useState(null);
+  const [highScore, setHighScore] = useState(0);
+
+  // Load high score from session storage on mount
+  useEffect(() => {
+    const savedHighScore = sessionStorage.getItem('flappyTarushiHighScore');
+    if (savedHighScore) {
+      setHighScore(parseInt(savedHighScore, 10));
+    }
+  }, []);
+
+  // Update high score when current score exceeds it
+  useEffect(() => {
+    if (gameState.score > highScore) {
+      setHighScore(gameState.score);
+      sessionStorage.setItem('flappyTarushiHighScore', gameState.score.toString());
+    }
+  }, [gameState.score, highScore]);
 
   // Memoized dimension update function
   const updateDimensions = useCallback(() => {
@@ -208,207 +224,130 @@ function App() {
     }
   }, [gameState.isStart]);
 
+  // Get unlocked characters based on high score
+  const unlockedCharacters = BIRD_CHARACTERS.filter(bird => bird.unlockScore <= highScore);
+
+  // Get next unlock threshold with alternating messages
+  const getNextUnlockInfo = () => {
+    const nextCharacter = BIRD_CHARACTERS.find(bird => bird.unlockScore > highScore);
+    if (nextCharacter) {
+      const pointsNeeded = nextCharacter.unlockScore - highScore;
+      // Alternate between two messages
+      return `Score +${pointsNeeded} to unlock next Tarushi! or \n Get her to kiss the game developer (+${pointsNeeded} points)😘`;
+    }
+    return "You've unlocked all Tarushis! Time to kiss the developer 😘";
+  };
+
   // Only render game when dimensions are calculated
   if (dimensions.width === 0) return null;
 
   return (
-    <Home>
-      <Background height={dimensions.height} width={dimensions.width} onClick={handler}>
-        <Score>{gameState.score}</Score>
+    <div className="h-screen flex justify-center items-center font-[Press_Start_2P] bg-[#2c3e50]">
+      <div 
+        className="relative overflow-hidden border-2 border-black cursor-pointer"
+        style={{
+          width: `${dimensions.width}px`,
+          height: `${dimensions.height}px`,
+          backgroundImage: 'url("./images/background-day.png")',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: `${dimensions.width}px ${dimensions.height}px`
+        }}
+        onClick={handler}
+      >
+        <div className="absolute z-10 top-[50px] left-0 right-0 text-center text-4xl text-white text-shadow">
+          {gameState.score}
+        </div>
+
         {!selectedBird && (
-          <CharacterSelection>
-            <SelectionTitle>
-              {gameState.score > 0 ? `Game Over! Score: ${gameState.score}` : 'Select Your Bird'}
-            </SelectionTitle>
-            <CharacterGrid>
-              {BIRD_CHARACTERS.map((bird) => (
-                <CharacterOption
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 p-5 rounded-2xl text-center z-20 min-w-[80%]">
+            <h2 className="text-white text-xl mb-3 leading-relaxed">
+              {gameState.score > 0 ? `Game Over! Score: ${gameState.score}` : 'Flappy Tarushi'}
+            </h2>
+            <p className="text-yellow-300 text-xs mb-4">
+              {getNextUnlockInfo()}
+            </p>
+            <p className="text-white text-xs mb-4">
+              High Score: {highScore}
+            </p>
+            <div className="grid grid-cols-2 gap-4 justify-items-center">
+              {unlockedCharacters.map((bird) => (
+                <div
                   key={bird.id}
+                  className="cursor-pointer p-2.5 rounded-lg bg-white/10 transition-all duration-200 hover:scale-110 hover:bg-white/20"
                   onClick={() => handleCharacterSelect(bird)}
                 >
-                  <BirdPreview
+                  <img
                     src={bird.image}
                     alt={bird.name}
-                    width={BIRD_WIDTH}
-                    height={BIRD_HEIGHT}
+                    className="object-contain mx-auto"
+                    style={{
+                      width: `${BIRD_WIDTH}px`,
+                      height: `${BIRD_HEIGHT}px`
+                    }}
                   />
-                  <CharacterName>{bird.name}</CharacterName>
-                </CharacterOption>
+                  <div className="text-white text-xs mt-2.5">
+                    {bird.name}
+                  </div>
+                  <div className="text-yellow-300 text-[8px] mt-1">
+                    {bird.description}
+                  </div>
+                </div>
               ))}
-            </CharacterGrid>
-          </CharacterSelection>
+            </div>
+          </div>
         )}
+
         {selectedBird && !gameState.isStart && (
-          <Startboard>Tap Bird To Start</Startboard>
+          <div className="absolute top-[49%] left-1/2 -ml-[100px] bg-black p-2.5 w-[200px] text-center text-sm rounded-lg text-white font-semibold">
+            {Math.random() < 0.5 
+              ? "Score +1 to unlock next Tarushi!"
+              : "Get Tarushi to kiss the game developer!"}
+          </div>
         )}
+
         {selectedBird && (
           <>
-            <Obj
-              height={gameState.objHeight}
-              width={OBJ_WIDTH}
-              left={gameState.objPos}
-              top={0}
-              deg={180}
+            <div
+              className="relative"
+              style={{
+                width: `${OBJ_WIDTH}px`,
+                height: `${gameState.objHeight}px`,
+                left: `${gameState.objPos}px`,
+                top: '0px',
+                transform: `rotate(180deg)`,
+                backgroundImage: 'url("./images/pipe-green.png")'
+              }}
             />
-            <Bird
-              height={BIRD_HEIGHT}
-              width={BIRD_WIDTH}
-              top={gameState.birdPos}
-              left={100}
-              rotation={gameState.rotation}
-              image={selectedBird.image}
+            <div
+              className="absolute cursor-pointer transition-transform duration-100 ease-out"
+              style={{
+                width: `${BIRD_WIDTH}px`,
+                height: `${BIRD_HEIGHT}px`,
+                top: `${gameState.birdPos}px`,
+                left: '100px',
+                transform: `rotate(${gameState.rotation}deg)`,
+                backgroundImage: `url(${selectedBird.image})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: `${BIRD_WIDTH}px ${BIRD_HEIGHT}px`,
+                transformOrigin: 'center center'
+              }}
               onClick={handler}
             />
-            <Obj
-              height={dimensions.height - OBJ_GAP - gameState.objHeight}
-              width={OBJ_WIDTH}
-              left={gameState.objPos}
-              top={dimensions.height - (gameState.objHeight + (dimensions.height - OBJ_GAP - gameState.objHeight))}
-              deg={0}
+            <div
+              className="relative"
+              style={{
+                width: `${OBJ_WIDTH}px`,
+                height: `${dimensions.height - OBJ_GAP - gameState.objHeight}px`,
+                left: `${gameState.objPos}px`,
+                top: `${dimensions.height - (gameState.objHeight + (dimensions.height - OBJ_GAP - gameState.objHeight))}px`,
+                backgroundImage: 'url("./images/pipe-green.png")'
+              }}
             />
           </>
         )}
-      </Background>
-    </Home>
+      </div>
+    </div>
   );
 }
 
 export default App;
-
-const Home = styled.div`
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Press Start 2P', cursive;
-  background-color: #2c3e50;
-`;
-const Background = styled.div.attrs(props => ({
-  style: {
-    width: `${props.width}px`,
-    height: `${props.height}px`,
-    backgroundSize: `${props.width}px ${props.height}px`,
-  },
-}))`
-  background-image: url("./images/background-day.png");
-  background-repeat: no-repeat;
-  position: relative;
-  overflow: hidden;
-  border: 2px solid black;
-`;
-
-const Bird = styled.div.attrs(props => ({
-  style: {
-    width: `${props.width}px`,
-    height: `${props.height}px`,
-    top: `${props.top}px`,
-    left: `${props.left}px`,
-    transform: `rotate(${props.rotation}deg)`,
-    backgroundImage: `url(${props.image})`,
-    backgroundSize: `${props.width}px ${props.height}px`,
-  },
-}))`
-  position: absolute;
-  background-repeat: no-repeat;
-  transition: transform 0.1s ease-out;
-  transform-origin: center center;
-  cursor: pointer;
-`;
-
-const Obj = styled.div.attrs(props => ({
-  style: {
-    width: `${props.width}px`,
-    height: `${props.height}px`,
-    left: `${props.left}px`,
-    top: `${props.top}px`,
-    transform: `rotate(${props.deg}deg)`,
-  },
-}))`
-  position: relative;
-  background-image: url("./images/pipe-green.png");
-`;
-
-const Startboard = styled.div`
-  position: relative;
-  top: 49%;
-  background-color: black;
-  padding: 10px;
-  width: 100px;
-  left: 50%;
-  margin-left: -50px;
-  text-align: center;
-  font-size: 20px;
-  border-radius: 10px;
-  color: #fff;
-  font-weight: 600;
-`;
-
-const Score = styled.div`
-  position: absolute;
-  z-index: 1;
-  top: 50px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 40px;
-  color: white;
-  text-shadow: 2px 2px 0px #000;
-`;
-
-// Add new styled components for character selection
-const CharacterSelection = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  border-radius: 15px;
-  text-align: center;
-  z-index: 2;
-  min-width: 80%;
-`;
-
-const SelectionTitle = styled.h2`
-  color: white;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 20px;
-  margin-bottom: 20px;
-  line-height: 1.4;
-`;
-
-const CharacterGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  justify-items: center;
-`;
-
-const CharacterOption = styled.div`
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  transition: transform 0.2s, background-color 0.2s;
-
-  &:hover {
-    transform: scale(1.1);
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-`;
-
-const BirdPreview = styled.img.attrs(props => ({
-  style: {
-    width: `${props.width}px`,
-    height: `${props.height}px`,
-  },
-}))`
-  object-fit: contain;
-`;
-
-const CharacterName = styled.div`
-  color: white;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 12px;
-  margin-top: 10px;
-`;

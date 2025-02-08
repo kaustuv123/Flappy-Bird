@@ -20,154 +20,154 @@ const BIRD_CHARACTERS = [
   {
     id: 'tarushi1',
     name: 'Pookie',
-    image: '../public/images/Pookie.png',
+    image: '../public/images/Pookie.webp',
     unlockScore: 0,
     description: 'Your starter Tarushi! Help her fly higher!'
   },
   {
     id: 'tarushi2',
     name: 'Autistic Bachcha',
-    image: '../public/images/Autistic.png',
+    image: '../public/images/Autistic.webp',
     unlockScore: 1,
     description: 'Score 1 to unlock this adorable version!'
   },
   {
     id: 'tarushi3',
     name: 'Chhotu Babi',
-    image: '../public/images/Baby.png',
+    image: '../public/images/Baby.webp',
     unlockScore: 0,
     description: 'Score 2 to unlock this adorable version!'
   },
   {
     id: 'tarushi4',
     name: 'Bakchod Billa',
-    image: '../public/images/Bakchod.png',
+    image: '../public/images/Bakchod.webp',
     unlockScore: 0,
     description: 'Score 3 to unlock this adorable version!'
   },
   {
     id: 'tarushi5',
     name: 'Balle Balle Shawa Shawa',
-    image: '../public/images/Balle.png',
+    image: '../public/images/Balle.webp',
     unlockScore: 0,
     description: 'Score 4 to unlock this adorable version!'
   },
   {
     id: 'tarushi6',
     name: 'Clingy Bear',
-    image: '../public/images/Clingy.png',
+    image: '../public/images/Clingy.webp',
     unlockScore: 0,
     description: 'Score 5 to unlock this adorable version!'
   },
   {
     id: 'tarushi7',
     name: 'YIPEEEEEEE',
-    image: '../public/images/Excited.png',
+    image: '../public/images/Excited.webp',
     unlockScore: 0,
     description: 'Score 6 to unlock this adorable version!'
   },
   {
     id: 'tarushi8',
     name: 'Hehehehehe',
-    image: '../public/images/Giggle.png',
+    image: '../public/images/Giggle.webp',
     unlockScore: 0,
     description: 'Score 7 to unlock this adorable version!'
   },
   {
     id: 'tarushi9',
     name: 'Goofy Bachcha',
-    image: '../public/images/Goofy.png',
+    image: '../public/images/Goofy.webp',
     unlockScore: 0,
     description: 'Score 8 to unlock this adorable version!'
   },
   {
     id: 'tarushi10',
     name: 'Resting bitch ass face',
-    image: '../public/images/Gusha.png',
+    image: '../public/images/Gusha.webp',
     unlockScore: 0,
     description: 'Score 9 to unlock this adorable version!'
   },
   {
     id: 'tarushi11',
     name: 'Gusshaaaa',
-    image: '../public/images/Hangry.png',
+    image: '../public/images/Hangry.webp',
     unlockScore: 0,
     description: 'Score 10 to unlock this adorable version!'
   },
   {
     id: 'tarushi12',
     name: 'Shawtyyyy',
-    image: '../public/images/Hawty.png',
+    image: '../public/images/Hawty.webp',
     unlockScore: 0,
     description: 'Score 11 to unlock this adorable version!'
   },
   {
     id: 'tarushi13',
     name: 'I signed up for thiss craz girl',
-    image: '../public/images/LostKid.png',
+    image: '../public/images/LostKid.webp',
     unlockScore: 0,
     description: 'Score 12 to unlock this adorable version!'
   },
   {
     id: 'tarushi14',
     name: 'Sad Bachcha',
-    image: '../public/images/Missie.png',
+    image: '../public/images/Missie.webp',
     unlockScore: 0,
     description: 'Score 13 to unlock this adorable version!'
   },
   {
     id: 'tarushi15',
     name: 'Allah Hu Akbar',
-    image: '../public/images/Namaz.png',
+    image: '../public/images/Namaz.webp',
     unlockScore: 0,
     description: 'Score 14 to unlock this adorable version!'
   },
   {
     id: 'tarushi16',
     name: 'My girllllll',
-    image: '../public/images/PrettayWoman.png',
+    image: '../public/images/PrettayWoman.webp',
     unlockScore: 0,
     description: 'Score 15 to unlock this adorable version!'
   },
   {
     id: 'tarushi17',
     name: 'Hawtieeee',
-    image: '../public/images/Semxy.png',
+    image: '../public/images/Semxy.webp',
     unlockScore: 0,
     description: 'Score 16 to unlock this adorable version!'
   },
   {
     id: 'tarushi18',
     name: 'Konichiwaaa (Anime girliee)',
-    image: '../public/images/SemxyAnimeGirl.png',
+    image: '../public/images/SemxyAnimeGirl.webp',
     unlockScore: 0,
     description: 'Score 17 to unlock this adorable version!'
   },
   {
     id: 'tarushi19',
     name: 'Strawberry Lassi',
-    image: '../public/images/Strawberry Lassi.png',
+    image: '../public/images/Strawberry Lassi.webp',
     unlockScore: 0,
     description: 'Score 18 to unlock this adorable version!'
   },
   {
     id: 'tarushi20',
     name: 'My Sunflowerrrrr',
-    image: '../public/images/Sunflower.png',
+    image: '../public/images/Sunflower.webp',
     unlockScore: 0,
     description: 'Score 19 to unlock this adorable version!'
   },
   {
     id: 'tarushi21',
     name: 'Naa MAANEEEEE??',
-    image: '../public/images/Superman.png',
+    image: '../public/images/Superman.webp',
     unlockScore: 0,
     description: 'Score 20 to unlock this adorable version!'
   },
   {
     id: 'tarushi22',
     name: 'Traditional Girliee',
-    image: '../public/images/Traditional.png',
+    image: '../public/images/Traditional.webp',
     unlockScore: 0,
     description: 'Score 21 to unlock this adorable version!'
   },
@@ -392,7 +392,7 @@ function App() {
         style={{
           width: `${dimensions.width}px`,
           height: `${dimensions.height}px`,
-          backgroundImage: 'url("./images/background-day.png")',
+          backgroundImage: 'url("./images/background-day.webp")',
           backgroundRepeat: 'no-repeat',
           backgroundSize: `${dimensions.width}px ${dimensions.height}px`
         }}
@@ -476,7 +476,7 @@ function App() {
                 left: `${gameState.objPos}px`,
                 top: '0px',
                 transform: `rotate(180deg)`,
-                backgroundImage: 'url("./images/pipe-green.png")'
+                backgroundImage: 'url("./images/pipe-green.webp")'
               }}
             />
             <div
@@ -502,7 +502,7 @@ function App() {
                 height: `${dimensions.height - OBJ_GAP - gameState.objHeight}px`,
                 left: `${gameState.objPos}px`,
                 top: `${dimensions.height - (gameState.objHeight + (dimensions.height - OBJ_GAP - gameState.objHeight))}px`,
-                backgroundImage: 'url("./images/pipe-green.png")'
+                backgroundImage: 'url("./images/pipe-green.webp")'
               }}
             />
           </>

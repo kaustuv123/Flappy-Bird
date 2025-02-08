@@ -2,8 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 
 // Remove static dimensions and calculate based on screen size
 const GAME_RATIO = 1.75; // Height:Width ratio (600:400 = 1.5)
-const BIRD_HEIGHT = 52;
-const BIRD_WIDTH = 50;
+const BIRD_HEIGHT = 55;  // Fixed height
+const BIRD_WIDTH = 70;   // Width for the flying bird container
 const GRAVITY = 0.5;  // Adjusted for more realistic gravity
 const JUMP_FORCE = -8;  // Smaller jump for better control
 const TERMINAL_VELOCITY = 12;  // Increased max fall speed
@@ -19,18 +19,158 @@ const ROTATION_SPEED = 0.2;  // Faster rotation response
 const BIRD_CHARACTERS = [
   {
     id: 'tarushi1',
-    name: 'Baby Tarushi',
-    image: '../public/images/yellowbird-upflap.png',
+    name: 'Pookie',
+    image: '../public/images/Pookie.png',
     unlockScore: 0,
     description: 'Your starter Tarushi! Help her fly higher!'
   },
   {
     id: 'tarushi2',
-    name: 'Cute Tarushi',
-    image: '../public/images/yellowbird-upflap2.png',
+    name: 'Autistic Bachcha',
+    image: '../public/images/Autistic.png',
     unlockScore: 1,
     description: 'Score 1 to unlock this adorable version!'
-  }
+  },
+  {
+    id: 'tarushi3',
+    name: 'Chhotu Babi',
+    image: '../public/images/Baby.png',
+    unlockScore: 0,
+    description: 'Score 2 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi4',
+    name: 'Bakchod Billa',
+    image: '../public/images/Bakchod.png',
+    unlockScore: 0,
+    description: 'Score 3 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi5',
+    name: 'Balle Balle Shawa Shawa',
+    image: '../public/images/Balle.png',
+    unlockScore: 0,
+    description: 'Score 4 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi6',
+    name: 'Clingy Bear',
+    image: '../public/images/Clingy.png',
+    unlockScore: 0,
+    description: 'Score 5 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi7',
+    name: 'YIPEEEEEEE',
+    image: '../public/images/Excited.png',
+    unlockScore: 0,
+    description: 'Score 6 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi8',
+    name: 'Hehehehehe',
+    image: '../public/images/Giggle.png',
+    unlockScore: 0,
+    description: 'Score 7 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi9',
+    name: 'Goofy Bachcha',
+    image: '../public/images/Goofy.png',
+    unlockScore: 0,
+    description: 'Score 8 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi10',
+    name: 'Resting bitch ass face',
+    image: '../public/images/Gusha.png',
+    unlockScore: 0,
+    description: 'Score 9 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi11',
+    name: 'Gusshaaaa',
+    image: '../public/images/Hangry.png',
+    unlockScore: 0,
+    description: 'Score 10 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi12',
+    name: 'Shawtyyyy',
+    image: '../public/images/Hawty.png',
+    unlockScore: 0,
+    description: 'Score 11 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi13',
+    name: 'I signed up for thiss craz girl',
+    image: '../public/images/LostKid.png',
+    unlockScore: 0,
+    description: 'Score 12 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi14',
+    name: 'Sad Bachcha',
+    image: '../public/images/Missie.png',
+    unlockScore: 0,
+    description: 'Score 13 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi15',
+    name: 'Allah Hu Akbar',
+    image: '../public/images/Namaz.png',
+    unlockScore: 0,
+    description: 'Score 14 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi16',
+    name: 'My girllllll',
+    image: '../public/images/PrettayWoman.png',
+    unlockScore: 0,
+    description: 'Score 15 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi17',
+    name: 'Hawtieeee',
+    image: '../public/images/Semxy.png',
+    unlockScore: 0,
+    description: 'Score 16 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi18',
+    name: 'Konichiwaaa (Anime girliee)',
+    image: '../public/images/SemxyAnimeGirl.png',
+    unlockScore: 0,
+    description: 'Score 17 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi19',
+    name: 'Strawberry Lassi',
+    image: '../public/images/Strawberry Lassi.png',
+    unlockScore: 0,
+    description: 'Score 18 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi20',
+    name: 'My Sunflowerrrrr',
+    image: '../public/images/Sunflower.png',
+    unlockScore: 0,
+    description: 'Score 19 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi21',
+    name: 'Naa MAANEEEEE??',
+    image: '../public/images/Superman.png',
+    unlockScore: 0,
+    description: 'Score 20 to unlock this adorable version!'
+  },
+  {
+    id: 'tarushi22',
+    name: 'Traditional Girliee',
+    image: '../public/images/Traditional.png',
+    unlockScore: 0,
+    description: 'Score 21 to unlock this adorable version!'
+  },
   // Add more characters here with increasing unlockScore values
 ];
 
@@ -47,6 +187,7 @@ function App() {
   });
   const [selectedBird, setSelectedBird] = useState(null);
   const [highScore, setHighScore] = useState(0);
+  const [showAllCharacters, setShowAllCharacters] = useState(true);  // New state for toggle
 
   // Load high score from session storage on mount
   useEffect(() => {
@@ -224,15 +365,18 @@ function App() {
     }
   }, [gameState.isStart]);
 
-  // Get unlocked characters based on high score
-  const unlockedCharacters = BIRD_CHARACTERS.filter(bird => bird.unlockScore <= highScore);
+  // Get unlocked characters based on high score or show all if toggle is on
+  const unlockedCharacters = showAllCharacters 
+    ? BIRD_CHARACTERS 
+    : BIRD_CHARACTERS.filter(bird => bird.unlockScore <= highScore);
 
-  // Get next unlock threshold with alternating messages
+  // Get next unlock info only if not showing all characters
   const getNextUnlockInfo = () => {
+    if (showAllCharacters) return "All characters are unlocked! Time to kiss the developer 😘";
+    
     const nextCharacter = BIRD_CHARACTERS.find(bird => bird.unlockScore > highScore);
     if (nextCharacter) {
       const pointsNeeded = nextCharacter.unlockScore - highScore;
-      // Alternate between two messages
       return `Score +${pointsNeeded} to unlock next Tarushi! or \n Get her to kiss the game developer (+${pointsNeeded} points)😘`;
     }
     return "You've unlocked all Tarushis! Time to kiss the developer 😘";
@@ -254,12 +398,25 @@ function App() {
         }}
         onClick={handler}
       >
+        {/* Add toggle button */}
+        <div className="absolute top-4 right-4 z-20">
+          <button
+            className="bg-black/80 text-white px-3 py-1 rounded-lg text-xs hover:bg-black/60 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowAllCharacters(prev => !prev);
+            }}
+          >
+            {showAllCharacters ? "Progressive Unlock" : "Show All"}
+          </button>
+        </div>
+
         <div className="absolute z-10 top-[50px] left-0 right-0 text-center text-4xl text-white text-shadow">
           {gameState.score}
         </div>
 
         {!selectedBird && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 p-5 rounded-2xl text-center z-20 min-w-[80%]">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 p-5 rounded-2xl text-center z-20 min-w-[80%] max-h-[80vh]">
             <h2 className="text-white text-xl mb-3 leading-relaxed">
               {gameState.score > 0 ? `Game Over! Score: ${gameState.score}` : 'Flappy Tarushi'}
             </h2>
@@ -269,30 +426,34 @@ function App() {
             <p className="text-white text-xs mb-4">
               High Score: {highScore}
             </p>
-            <div className="grid grid-cols-2 gap-4 justify-items-center">
-              {unlockedCharacters.map((bird) => (
-                <div
-                  key={bird.id}
-                  className="cursor-pointer p-2.5 rounded-lg bg-white/10 transition-all duration-200 hover:scale-110 hover:bg-white/20"
-                  onClick={() => handleCharacterSelect(bird)}
-                >
-                  <img
-                    src={bird.image}
-                    alt={bird.name}
-                    className="object-contain mx-auto"
-                    style={{
-                      width: `${BIRD_WIDTH}px`,
-                      height: `${BIRD_HEIGHT}px`
-                    }}
-                  />
-                  <div className="text-white text-xs mt-2.5">
-                    {bird.name}
+            <div className="overflow-y-auto max-h-[50vh] pr-2 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-4 justify-items-center pb-4">
+                {unlockedCharacters.map((bird) => (
+                  <div
+                    key={bird.id}
+                    className="cursor-pointer p-4 rounded-xl bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:from-white/20 hover:to-white/10 border border-white/10 w-full"
+                    onClick={() => handleCharacterSelect(bird)}
+                  >
+                    <div className="bg-gradient-to-b from-purple-500/20 to-pink-500/20 rounded-lg p-2 mb-2">
+                      <img
+                        src={bird.image}
+                        alt={bird.name}
+                        className="object-contain mx-auto hover:rotate-12 transition-transform duration-300"
+                        style={{
+                          width: 'auto',
+                          height: `${BIRD_HEIGHT}px`
+                        }}
+                      />
+                    </div>
+                    <div className="text-white text-xs mt-2 font-semibold">
+                      {bird.name}
+                    </div>
+                    <div className="text-yellow-300 text-[8px] mt-1 opacity-80">
+                      {bird.description}
+                    </div>
                   </div>
-                  <div className="text-yellow-300 text-[8px] mt-1">
-                    {bird.description}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -328,7 +489,8 @@ function App() {
                 transform: `rotate(${gameState.rotation}deg)`,
                 backgroundImage: `url(${selectedBird.image})`,
                 backgroundRepeat: 'no-repeat',
-                backgroundSize: `${BIRD_WIDTH}px ${BIRD_HEIGHT}px`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
                 transformOrigin: 'center center'
               }}
               onClick={handler}

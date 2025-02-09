@@ -35,140 +35,140 @@ const BIRD_CHARACTERS = [
     id: 'tarushi3',
     name: 'Chhotu Babi',
     image: './images/Baby.webp',
-    unlockScore: 0,
+    unlockScore: 2,
     description: 'Score 2 to unlock this adorable version!'
   },
   {
     id: 'tarushi4',
     name: 'Bakchod Billa',
     image: './images/Bakchod.webp',
-    unlockScore: 0,
+    unlockScore: 3,
     description: 'Score 3 to unlock this adorable version!'
   },
   {
     id: 'tarushi5',
     name: 'Balle Balle Shawa Shawa',
     image: './images/Balle.webp',
-    unlockScore: 0,
+    unlockScore: 4,
     description: 'Score 4 to unlock this adorable version!'
   },
   {
     id: 'tarushi6',
     name: 'Clingy Bear',
     image: './images/Clingy.webp',
-    unlockScore: 0,
+    unlockScore: 5,
     description: 'Score 5 to unlock this adorable version!'
   },
   {
     id: 'tarushi7',
     name: 'YIPEEEEEEE',
     image: './images/Excited.webp',
-    unlockScore: 0,
+    unlockScore: 6,
     description: 'Score 6 to unlock this adorable version!'
   },
   {
     id: 'tarushi8',
     name: 'Hehehehehe',
     image: './images/Giggle.webp',
-    unlockScore: 0,
+    unlockScore: 7,
     description: 'Score 7 to unlock this adorable version!'
   },
   {
     id: 'tarushi9',
     name: 'Goofy Bachcha',
     image: './images/Goofy.webp',
-    unlockScore: 0,
+    unlockScore: 8,
     description: 'Score 8 to unlock this adorable version!'
   },
   {
     id: 'tarushi10',
     name: 'Resting bitch ass face',
     image: './images/Gusha.webp',
-    unlockScore: 0,
+    unlockScore: 9,
     description: 'Score 9 to unlock this adorable version!'
   },
   {
     id: 'tarushi11',
     name: 'Gusshaaaa',
     image: './images/Hangry.webp',
-    unlockScore: 0,
+    unlockScore: 10,
     description: 'Score 10 to unlock this adorable version!'
   },
   {
     id: 'tarushi12',
     name: 'Shawtyyyy',
     image: './images/Hawty.webp',
-    unlockScore: 0,
+    unlockScore: 11,
     description: 'Score 11 to unlock this adorable version!'
   },
   {
     id: 'tarushi13',
     name: 'I signed up for thiss craz girl',
     image: './images/LostKid.webp',
-    unlockScore: 0,
+    unlockScore: 12,
     description: 'Score 12 to unlock this adorable version!'
   },
   {
     id: 'tarushi14',
     name: 'Sad Bachcha',
     image: './images/Missie.webp',
-    unlockScore: 0,
+    unlockScore: 13,
     description: 'Score 13 to unlock this adorable version!'
   },
   {
     id: 'tarushi15',
     name: 'Allah Hu Akbar',
     image: './images/Namaz.webp',
-    unlockScore: 0,
+    unlockScore: 14,
     description: 'Score 14 to unlock this adorable version!'
   },
   {
     id: 'tarushi16',
     name: 'My girllllll',
     image: './images/PrettayWoman.webp',
-    unlockScore: 0,
+    unlockScore: 15,
     description: 'Score 15 to unlock this adorable version!'
   },
   {
     id: 'tarushi17',
     name: 'Hawtieeee',
     image: './images/Semxy.webp',
-    unlockScore: 0,
+    unlockScore: 16,
     description: 'Score 16 to unlock this adorable version!'
   },
   {
     id: 'tarushi18',
     name: 'Konichiwaaa (Anime girliee)',
     image: './images/SemxyAnimeGirl.webp',
-    unlockScore: 0,
+    unlockScore: 17,
     description: 'Score 17 to unlock this adorable version!'
   },
   {
     id: 'tarushi19',
     name: 'Strawberry Lassi',
     image: './images/Strawberry Lassi.webp',
-    unlockScore: 0,
+    unlockScore: 18,
     description: 'Score 18 to unlock this adorable version!'
   },
   {
     id: 'tarushi20',
     name: 'My Sunflowerrrrr',
     image: './images/Sunflower.webp',
-    unlockScore: 0,
+    unlockScore: 19,
     description: 'Score 19 to unlock this adorable version!'
   },
   {
     id: 'tarushi21',
     name: 'Naa MAANEEEEE??',
     image: './images/Superman.webp',
-    unlockScore: 0,
+    unlockScore: 20,
     description: 'Score 20 to unlock this adorable version!'
   },
   {
     id: 'tarushi22',
     name: 'Traditional Girliee',
     image: './images/Traditional.webp',
-    unlockScore: 0,
+    unlockScore: 21,
     description: 'Score 21 to unlock this adorable version!'
   },
   // Add more characters here with increasing unlockScore values
@@ -187,7 +187,7 @@ function App() {
   });
   const [selectedBird, setSelectedBird] = useState(null);
   const [highScore, setHighScore] = useState(0);
-  const [showAllCharacters, setShowAllCharacters] = useState(true);  // New state for toggle
+  const [showAllCharacters, setShowAllCharacters] = useState(false);  // New state for toggle
 
   // Load high score from session storage on mount
   useEffect(() => {

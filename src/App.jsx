@@ -372,8 +372,6 @@ function App() {
 
   // Get next unlock info only if not showing all characters
   const getNextUnlockInfo = () => {
-    if (showAllCharacters) return "All characters are unlocked! Time to kiss the developer 😘";
-    
     const nextCharacter = BIRD_CHARACTERS.find(bird => bird.unlockScore > highScore);
     if (nextCharacter) {
       const pointsNeeded = nextCharacter.unlockScore - highScore;
@@ -398,19 +396,6 @@ function App() {
         }}
         onClick={handler}
       >
-        {/* Add toggle button */}
-        <div className="absolute top-4 right-4 z-20">
-          <button
-            className="bg-black/80 text-white px-3 py-1 rounded-lg text-xs hover:bg-black/60 transition-colors"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowAllCharacters(prev => !prev);
-            }}
-          >
-            {showAllCharacters ? "Progressive Unlock" : "Show All"}
-          </button>
-        </div>
-
         <div className="absolute z-10 top-[50px] left-0 right-0 text-center text-4xl text-white text-shadow">
           {gameState.score}
         </div>

@@ -187,7 +187,7 @@ function App() {
   });
   const [selectedBird, setSelectedBird] = useState(null);
   const [highScore, setHighScore] = useState(0);
-  const [showAllCharacters, setShowAllCharacters] = useState(true);  // New state for toggle
+  const [showAllCharacters, setShowAllCharacters] = useState(false);  // New state for toggle
 
   // Load high score from session storage on mount
   useEffect(() => {
